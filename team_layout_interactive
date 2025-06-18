@@ -86,7 +86,13 @@ def main():
     ### Creating button that makes the players
     create_player_button = QPushButton(window)
     create_player_button.setText("Create Player")
-    create_player_button.move(190, 470)
+    create_player_button.move(190, 468)
+    
+    
+    ### Creating button that imports the players
+    import_player_button = QPushButton(window)
+    import_player_button.setText("Import Players")
+    import_player_button.move(320, 468)
     
     
     ### Separate the textbox, labels, and buttons from rest of window
