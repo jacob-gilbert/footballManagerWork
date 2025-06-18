@@ -2,14 +2,17 @@ from PyQt5.QtWidgets import QApplication, QLabel, QWidget, QPushButton, QFrame, 
 from PyQt5.QtGui import QFont, QPainter, QPen, QBrush
 from PyQt5.QtCore import Qt, QPoint
 
-player_list = []
+import pandas as pd
+import importSquadData
+
+imported = False
 
 class Player(QWidget):
     def __init__(self, name, window):
         super().__init__(window)
         self.name = name
         self.radius = 15
-        self.setFixedSize(self.radius * 2 + 50, self.radius * 2 + 50) # means the circle will be contained within, adding extra space for name
+        self.setFixedSize(self.radius * 10, self.radius * 10) # means the circle will be contained within, adding extra space for name
         self._drag_active = False
         self._drag_position = QPoint() # tracks mouse position where clicked
         self.setAttribute(Qt.WA_TranslucentBackground) # makes background translucent so only circle is shown
@@ -49,7 +52,7 @@ class Player(QWidget):
 
         # Draw the name in the center
         painter.setPen(Qt.black)
-        font = QFont("Arial", 10)
+        font = QFont("Arial", 5)
         painter.setFont(font)
         text_rect = self.rect()
         text_rect.setTop(self.radius * 2)  # start text below the circle
@@ -59,51 +62,53 @@ class Player(QWidget):
 def main():
     app = QApplication([])
     window = QWidget()
-    window.setGeometry(350, 200, 700, 500)
-    window.setFixedSize(700, 500)
+    window.setGeometry(350, 200, 1000, 600)
+    window.setFixedSize(1000, 600)
     window.setWindowTitle("Interactive Football Pitch")
 
 
     ### Creating and editing a label
     name_label = QLabel(window) # create label
     name_label.setText("Add Player Name:") # set text
-    name_label.setFont(QFont("Times New Roman", 15)) # change font
-    name_label.move(20, 450) # change location
+    name_label.setFont(QFont("Times New Roman", 10)) # change font
+    name_label.move(22, 540) # change location
     
     
     ### Creating and editing textbox
     name_textbox = QLineEdit(window) # create
-    name_textbox.move(20, 475) # move
+    name_textbox.move(20, 565) # move
     
     
     ### Creating label for button that makes the players
     create_player_button_label = QLabel(window)
     create_player_button_label.setText("Press Button To Create Player (Add name to textbox on left first):")
-    create_player_button_label.setFont(QFont("Times New Roman", 15))
-    create_player_button_label.move(200, 450)
+    create_player_button_label.setFont(QFont("Times New Roman", 10))
+    create_player_button_label.move(302, 540)
     
     
     ### Creating button that makes the players
     create_player_button = QPushButton(window)
     create_player_button.setText("Create Player")
-    create_player_button.move(190, 468)
+    create_player_button.move(300, 562)
     
     
     ### Creating button that imports the players
     import_player_button = QPushButton(window)
     import_player_button.setText("Import Players")
-    import_player_button.move(320, 468)
+    import_player_button.move(450, 562)
     
     
     ### Separate the textbox, labels, and buttons from rest of window
     line = QFrame(window)
     line.setFrameShape(QFrame.HLine)
-    line.setGeometry(0, 440, 700, 10)
+    line.setGeometry(0, 530, 1000, 10)
     
     
     # connect button to function --> creating lambda function that calls the on_create_player_button_clicked function
     # with the contents of the textbox as a parameter converted to plain text
     create_player_button.clicked.connect(lambda: on_create_player_button_clicked(name_textbox.text(), window))
+
+    import_player_button.clicked.connect(lambda: on_import_player_button_clicked(window))
     
     
     window.show()
@@ -113,6 +118,19 @@ def on_create_player_button_clicked(name, window):
     player = Player(name, window)
     player.move(100, 100)
     player.show()
+
+def on_import_player_button_clicked(window):
+    global imported
+    
+    if imported == False: # only want to import once
+        imported = True
+        player_df = importSquadData.create_player_df()
+        player_names = player_df["Name"].to_list()
+        for i in range(len(player_names)):
+            player = Player(player_names[i], window)
+            player.move(100, 100)
+            player.show()
+        print(player_df)
     
 if __name__ == '__main__':
     main()
