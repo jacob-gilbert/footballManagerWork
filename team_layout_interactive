@@ -1,0 +1,56 @@
+from PyQt5.QtWidgets import QApplication, QLabel, QWidget, QVBoxLayout, QPushButton, QFrame, QLineEdit, QMessageBox
+from PyQt5.QtGui import QFont
+
+def main():
+    app = QApplication([])
+    window = QWidget()
+    window.setGeometry(350, 200, 700, 500)
+    window.setFixedSize(700, 500)
+    window.setWindowTitle("Interactive Football Pitch")
+
+
+    ### Creating and editing a label
+    name_label = QLabel(window) # create label
+    name_label.setText("Add Player Name:") # set text
+    name_label.setFont(QFont("Times New Roman", 15)) # change font
+    name_label.move(20, 450) # change location
+    
+    
+    ### Creating and editing textbox
+    name_textbox = QLineEdit(window) # create
+    name_textbox.move(20, 475) # move
+    
+    
+    ### Creating label for button that makes the players
+    create_player_button_label = QLabel(window)
+    create_player_button_label.setText("Press Button To Create Player (Add name to textbox on left first):")
+    create_player_button_label.setFont(QFont("Times New Roman", 15))
+    create_player_button_label.move(200, 450)
+    
+    
+    ### Creating button that makes the players
+    create_player_button = QPushButton(window)
+    create_player_button.setText("Create Player")
+    create_player_button.move(190, 470)
+    
+    
+    ### Separate the textbox, labels, and buttons from rest of window
+    line = QFrame(window)
+    line.setFrameShape(QFrame.HLine)
+    line.setGeometry(0, 440, 700, 10)
+    
+    
+    # connect button to function --> creating lambda function that calls the on_create_player_button_clicked function
+    # with the contents of the textbox as a parameter converted to plain text
+    create_player_button.clicked.connect(lambda: on_create_player_button_clicked(name_textbox.text()))
+    
+    window.show()
+    app.exec()
+    
+def on_create_player_button_clicked(msg):
+    message = QMessageBox()
+    message.setText(msg)
+    message.exec_()
+    
+if __name__ == '__main__':
+    main()
