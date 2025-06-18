@@ -13,3 +13,5 @@
 * When players are uploaded they are assigned a location on the screen based on their best position assign from football manager. This position may not be the one you want them to play in so you will have to drag them to where you'd like.
 * There is an area around a player that you can click on to drag the player, not just on the circle. However, some players names are so long that they do not fit in the area and are cut off (see image above).
 * Some characters to not import correctly from football manager (see image above).
+
+### Directions
