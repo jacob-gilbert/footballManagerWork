@@ -15,3 +15,9 @@
 * Some characters to not import correctly from football manager (see image above).
 
 ### Directions
+* Download the zip file from github
+* Unzip the file and put the folder somewhere you can easily find
+* Go into football manager to your squad screen, make sure the view is set to general info (it won't work otherwise). Hide loans and trialists unless you want to include them. Highlight every player in your squad and press ctrl p. Choose to save as a text file put the file in the same folder as the code you downloaded from github. Name the file squad_text.rtf (the code won't work otherwise)
+* Now you are almost ready to run the code. You need to have python downloaded (preferably 3.12.3) find a tutorial of how to install python if you do not have it already. You also need to import the python modules this code utilizes
+* In your terminal type the command: pip install PyQt5
+* In your terminal type the command: pip install pandas
