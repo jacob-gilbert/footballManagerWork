@@ -1,5 +1,60 @@
-from PyQt5.QtWidgets import QApplication, QLabel, QWidget, QVBoxLayout, QPushButton, QFrame, QLineEdit, QMessageBox
-from PyQt5.QtGui import QFont
+from PyQt5.QtWidgets import QApplication, QLabel, QWidget, QPushButton, QFrame, QLineEdit
+from PyQt5.QtGui import QFont, QPainter, QPen, QBrush
+from PyQt5.QtCore import Qt, QPoint
+
+player_list = []
+
+class Player(QWidget):
+    def __init__(self, name, window):
+        super().__init__(window)
+        self.name = name
+        self.radius = 15
+        self.setFixedSize(self.radius * 2 + 50, self.radius * 2 + 50) # means the circle will be contained within, adding extra space for name
+        self._drag_active = False
+        self._drag_position = QPoint() # tracks mouse position where clicked
+        self.setAttribute(Qt.WA_TranslucentBackground) # makes background translucent so only circle is shown
+        
+    def mousePressEvent(self, event):
+        if event.button() == Qt.LeftButton: # only care about left click
+            self._drag_active = True
+            self._drag_position = event.globalPos() - self.frameGeometry().topLeft() # if we don't consider this offset the top left corner will always snap to the mouse
+            event.accept() # means event has been handled
+
+    def mouseMoveEvent(self, event):
+        if self._drag_active and event.buttons() == Qt.LeftButton:
+            self.move(event.globalPos() - self._drag_position)
+            event.accept()
+
+    def mouseReleaseEvent(self, event):
+        self._drag_active = False
+
+    def paintEvent(self, event):
+        painter = QPainter(self)
+        painter.setRenderHint(QPainter.Antialiasing) # smoothes out the edges of shapes
+
+        diameter = self.radius * 2
+        pen_width = 2
+
+        # Calculate the center of the widget
+        center_x = self.width() // 2
+        center_y = self.height() // 2
+
+        # Calculate top-left coords to draw ellipse so circle is centered horizontally
+        top_left_x = center_x - self.radius
+        top_left_y = center_y - self.radius - 5 # subtracted 5 to leave extra room for name below
+
+        painter.setBrush(QBrush(Qt.blue)) # makes fill blue
+        painter.setPen(QPen(Qt.black, pen_width)) # makes border black
+        painter.drawEllipse(top_left_x, top_left_y, diameter - pen_width, diameter - pen_width)
+
+        # Draw the name in the center
+        painter.setPen(Qt.black)
+        font = QFont("Arial", 10)
+        painter.setFont(font)
+        text_rect = self.rect()
+        text_rect.setTop(self.radius * 2)  # start text below the circle
+        painter.drawText(text_rect, Qt.AlignCenter, self.name)
+        
 
 def main():
     app = QApplication([])
@@ -42,15 +97,16 @@ def main():
     
     # connect button to function --> creating lambda function that calls the on_create_player_button_clicked function
     # with the contents of the textbox as a parameter converted to plain text
-    create_player_button.clicked.connect(lambda: on_create_player_button_clicked(name_textbox.text()))
+    create_player_button.clicked.connect(lambda: on_create_player_button_clicked(name_textbox.text(), window))
+    
     
     window.show()
     app.exec()
     
-def on_create_player_button_clicked(msg):
-    message = QMessageBox()
-    message.setText(msg)
-    message.exec_()
+def on_create_player_button_clicked(name, window):
+    player = Player(name, window)
+    player.move(100, 100)
+    player.show()
     
 if __name__ == '__main__':
     main()
