@@ -58,7 +58,7 @@ class Player(QWidget):
         text_rect.setTop(self.radius * 2)  # start text below the circle
         painter.drawText(text_rect, Qt.AlignCenter, self.name)
 
-    def move_to_position(self, pos):
+    def move_to_position(self, pos, grid_layout):
         if pos == "GK":
             self.move(25, 225)
         elif pos == "WB (R)" or pos == "D (R)":
@@ -160,15 +160,16 @@ def main():
     # with the contents of the textbox as a parameter converted to plain text
     create_player_button.clicked.connect(lambda: on_create_player_button_clicked(name_textbox.text(), window))
 
-    import_player_button.clicked.connect(lambda: on_import_player_button_clicked(window))
+    import_player_button.clicked.connect(lambda: on_import_player_button_clicked(window, grid))
 
     ### Prevent the row with buttons on it from stretching the buttons and text box
     grid.setRowStretch(0, 1) # allowing stretch on this makes not stretching the others work
     grid.setRowStretch(5, 0) # prevents stretch
     grid.setRowStretch(6, 0) # prevents stretch
 
-    ### Setting the margins on the grid
+    ### Setting the margins and spacing on the grid
     grid.setContentsMargins(5,5,5,5)
+    grid.setHorizontalSpacing(0) # removes spaces between columns
 
     window.setLayout(grid)
 
@@ -180,7 +181,7 @@ def on_create_player_button_clicked(name, window):
     player.move(100, 100)
     player.show()
 
-def on_import_player_button_clicked(window):
+def on_import_player_button_clicked(window, grid):
     global imported
 
     if imported == False: # only want to import once
@@ -191,7 +192,7 @@ def on_import_player_button_clicked(window):
         for i in range(len(player_names)): # create a circle for each player
             player = Player(player_names[i], window)
             print(best_positions[i])
-            player.move_to_position(best_positions[i].strip()) # move the player on the field based on their best position
+            player.move_to_position(best_positions[i].strip(), grid) # move the player on the field based on their best position
             player.show()
         print(player_df)
     
