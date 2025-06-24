@@ -88,7 +88,7 @@ class Player(QWidget):
 def main():
     app = QApplication([])
     window = QWidget()
-    window.setGeometry(350, 200, 600, 300)
+    window.setGeometry(150, 100, 600, 300)
     #window.setFixedSize(1200, 600)
     window.setWindowTitle("Interactive Football Pitch")
 
